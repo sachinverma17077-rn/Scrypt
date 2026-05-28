@@ -4,6 +4,7 @@ import MessageLogs from '../Screens/Root/MessageLogs';
 import CallLogs from '../Screens/Root/CallLogs';
 import { Image } from 'react-native';
 import icons from '../Constants/icons'
+import MyAccount from '../Screens/Root/MyAccount';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,6 +39,22 @@ const TabNavigation = () => {
                     tabBarIcon: ({ focused }) => (
                         <Image
                             source={icons?.call}
+                            style={{
+                                width: 24,
+                                height: 24,
+                                // tintColor: focused ? '#2CA58D' : 'gray'
+                            }}
+                        />
+                    ),
+                }}
+            />
+              <Tab.Screen
+                name="MyAccount"
+                component={MyAccount}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <Image
+                            source={icons?.user_account}
                             style={{
                                 width: 24,
                                 height: 24,
