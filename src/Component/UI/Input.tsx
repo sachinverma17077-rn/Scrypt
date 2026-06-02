@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -5,24 +6,29 @@ import {
   StyleProp,
   TextStyle,
   TextInput,
-} from 'react-native'
-import React from 'react'
+  KeyboardTypeOptions,
+} from 'react-native';
 
-import Typography from './Typography'
-import Font from '../../Constants/Font'
-import { Colors } from '../../Constants/colors'
-import AppGradient from './GradientView'
-import { GradientColors } from '../../Constants/GradientColor'
+import Typography from './Typography';
+import Font from '../../Constants/Font';
+import {Colors} from '../../Constants/colors';
+import AppGradient from './GradientView';
+import {GradientColors} from '../../Constants/GradientColor';
 
 interface InputProps {
-  style?: StyleProp<ViewStyle>
-  title?: string
-  titleStyle?: StyleProp<TextStyle>
-  value?: string
-  onChange?: (text: string) => void
-  styleInputView ?:StyleProp<ViewStyle>
-  cursorColor?: StyleProp<TextStyle>
-  placeholderTextColor?: StyleProp<TextStyle>
+  style?: StyleProp<ViewStyle>;
+  title?: string;
+  titleStyle?: StyleProp<TextStyle>;
+  value?: string;
+  onChange?: (text: string) => void;
+  styleInputView?: StyleProp<ViewStyle>;
+  cursorColor?: string;
+  placeholderTextColor?: string;
+  onFocus?: () => void;
+  keyboardType?: KeyboardTypeOptions;
+  error?: string;
+    textColor?: string; 
+    
 }
 
 const Input = ({
@@ -33,33 +39,71 @@ const Input = ({
   onChange,
   styleInputView,
   cursorColor,
-  placeholderTextColor
+  placeholderTextColor,
+  onFocus,
+  keyboardType = 'default',
+  error,
+  textColor = '#000000ff', 
 }: InputProps) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    onFocus?.();
+  };
+
   return (
     <View style={[styles.mainInput, style]}>
-      <Typography
-        fontFamily={Font?.Regular}
-        size={18}
-        color={Colors?.title}
-        style={[styles.title, titleStyle]}
-      >
-        {title}
-      </Typography>
+      {!!title && (
+        <Typography
+          fontFamily={Font?.Regular}
+          size={16}
+          color={Colors?.title}
+          style={[styles.title, titleStyle]}>
+          {title}
+        </Typography>
+      )}
 
-      <AppGradient style={[styles?.InputView,styleInputView]} colors={GradientColors.Input}>
+      <AppGradient
+        style={[
+          styles.InputView,
+          styleInputView,
+          {
+            height: isFocused ? 40 : 30,
+            borderWidth: 0.5,
+            borderRadius: 12,
+            borderColor: isFocused
+              ? Colors?.BorderColorDark
+              : Colors?.BorderColorLight,
+          },
+        ]}
+        colors={GradientColors.Input}>
         <TextInput
           value={value}
           onChangeText={onChange}
-          style={styles.input}
+         style={[styles.input, {color: textColor}]}
           cursorColor={cursorColor}
-         placeholderTextColor={placeholderTextColor}
+          placeholderTextColor={placeholderTextColor}
+          onFocus={handleFocus}
+          onBlur={() => setIsFocused(false)}
+          keyboardType={keyboardType}
+          
         />
       </AppGradient>
-    </View>
-  )
-}
 
-export default Input
+      {!!error && (
+        <Typography
+          size={14}
+          color={Colors?.errorText}
+          style={styles.errorText}>
+          {error}
+        </Typography>
+      )}
+    </View>
+  );
+};
+
+export default Input;
 
 const styles = StyleSheet.create({
   mainInput: {
@@ -70,11 +114,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 
+  InputView: {},
+
   input: {
-    padding: 14,
+    paddingHorizontal: 14,
     color: '#fff',
+    // paddingVertical:20
   },
-  InputView:{
-    
-  }
-})
+
+  errorText: {
+    marginTop: 4,
+    textAlign: 'right',
+  },
+});

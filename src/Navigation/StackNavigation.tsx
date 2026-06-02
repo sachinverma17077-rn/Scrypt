@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Login from '../Screens/Auth/Login';
 import MyAccount from '../Screens/Root/MyAccount';
-import TabNavigation from './TabNavigation';
+import TabComponent from './TabNavigation';
 import MessageLogs from '../Screens/Root/MessageLogs';
 import MyProfile from '../Screens/Root/MyProfile';
 
@@ -15,7 +15,7 @@ const StackNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={TabNavigation} />
+        <Stack.Screen name="Home" component={TabComponent} />
         <Stack.Screen name='Account' component={MyAccount} />
         <Stack.Screen name='Login' component={Login} />
         <Stack.Screen name='MessageLogs' component={MessageLogs} />
