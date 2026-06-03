@@ -14,6 +14,7 @@ import Font from '../../Constants/Font';
 import {Colors} from '../../Constants/colors';
 import AppGradient from './GradientView';
 import {GradientColors} from '../../Constants/GradientColor';
+import SvgIcon from '../../Constants/SvgIcon';
 
 interface InputProps {
   style?: StyleProp<ViewStyle>;
@@ -28,6 +29,8 @@ interface InputProps {
   keyboardType?: KeyboardTypeOptions;
   error?: string;
     textColor?: string; 
+    placeholder?:string;
+    iconName?:string;
     
 }
 
@@ -43,7 +46,9 @@ const Input = ({
   onFocus,
   keyboardType = 'default',
   error,
-  textColor = '#000000ff', 
+  textColor = '#000000ff',
+  placeholder = '#64748B' ,
+  iconName
 }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -64,32 +69,30 @@ const Input = ({
         </Typography>
       )}
 
-      <AppGradient
+      <View
         style={[
           styles.InputView,
           styleInputView,
-          {
-            height: isFocused ? 40 : 30,
-            borderWidth: 0.5,
-            borderRadius: 12,
-            borderColor: isFocused
-              ? Colors?.BorderColorDark
-              : Colors?.BorderColorLight,
-          },
+         
         ]}
-        colors={GradientColors.Input}>
+        >
+         <View style={[styles?.firstIcon]}>
+           <SvgIcon name={iconName} color='#64748B' />
+         </View>
         <TextInput
           value={value}
           onChangeText={onChange}
          style={[styles.input, {color: textColor}]}
           cursorColor={cursorColor}
           placeholderTextColor={placeholderTextColor}
-          onFocus={handleFocus}
-          onBlur={() => setIsFocused(false)}
+          onFocus={onFocus}
+          // onBlur={() => setIsFocused(false)}
           keyboardType={keyboardType}
+          placeholder={placeholder}
+          
           
         />
-      </AppGradient>
+      </View>
 
       {!!error && (
         <Typography
@@ -107,23 +110,36 @@ export default Input;
 
 const styles = StyleSheet.create({
   mainInput: {
-    padding: 16,
+marginBottom:15
   },
 
   title: {
     marginBottom: 8,
   },
 
-  InputView: {},
+  InputView: {
+    borderWidth:1,
+    borderColor:Colors?.inputBorderColor,
+    borderRadius:12,
+    height:55,
+    // justifyContent:'space-between',
+    flexDirection:"row",
+    alignItems:'center'
+
+  },
 
   input: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     color: '#fff',
+    fontSize:18
     // paddingVertical:20
   },
 
   errorText: {
     marginTop: 4,
     textAlign: 'right',
+  },
+  firstIcon:{
+paddingLeft:10
   },
 });

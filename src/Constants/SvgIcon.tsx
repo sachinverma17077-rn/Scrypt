@@ -8,11 +8,15 @@ export type Icons =
   | 'call_Tab'
   | 'call_Tab_Active'
   | 'profile_Tab'
-  | 'profile_Tab_Active';
+  | 'profile_Tab_Active'
+  | 'lock'
+  | 'mail'
+  | 'key'
+  | 'eye'
 
 type Props = {
   size?: number;
-  name?: Icons;
+  name?: any;
   color?: string;
 };
 
@@ -83,9 +87,9 @@ const SvgIcon: React.FC<Props> = ({
         <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
           <Path d="M0 0h24v24H0z" fill="none" />
           <G stroke={color} strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
-            <Path 
-              fill={color} 
-              d="M8 3c0.5 0 2.5 4.5 2.5 5 0 1 -1.5 2 -2 3c-0.5 1 0.5 2 1.5 3c0.39 0.39 2 2 3 1.5c1 -0.5 2 -2 3 -2c0.5 0 5 2 5 2.5c0 2 -1.5 3.5 -3 4c-1.5 0.5 -2.5 0.5 -4.5 0c-2 -0.5 -3.5 -1 -6 -3.5c-2.5 -2.5 -3 -4 -3.5 -6c-0.5 -2 -0.5 -3 0 -4.5c0.5 -1.5 2 -3 4 -3Z" 
+            <Path
+              fill={color}
+              d="M8 3c0.5 0 2.5 4.5 2.5 5 0 1 -1.5 2 -2 3c-0.5 1 0.5 2 1.5 3c0.39 0.39 2 2 3 1.5c1 -0.5 2 -2 3 -2c0.5 0 5 2 5 2.5c0 2 -1.5 3.5 -3 4c-1.5 0.5 -2.5 0.5 -4.5 0c-2 -0.5 -3.5 -1 -6 -3.5c-2.5 -2.5 -3 -4 -3.5 -6c-0.5 -2 -0.5 -3 0 -4.5c0.5 -1.5 2 -3 4 -3Z"
             />
             <Path d="M15.76 8.28c-0.5 -0.51 -1.1 -0.93 -1.76 -1.24M15.76 8.28c0.49 0.49 0.9 1.08 1.2 1.72" />
             <Path d="M18.67 5.35c-1 -1 -2.26 -1.73 -3.67 -2.1M18.67 5.35c0.99 1 1.72 2.25 2.08 3.65" />
@@ -126,6 +130,72 @@ const SvgIcon: React.FC<Props> = ({
         </Svg>
       );
 
+    case 'lock':
+      return (
+        <Svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <Path
+            fill={color}
+            d="M12 1C8.676 1 6 3.676 6 7v1c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2V7c0-3.324-2.676-6-6-6zm0 2c2.276 0 4 1.724 4 4v1H8V7c0-2.276 1.724-4 4-4zm0 10c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"
+          />
+        </Svg>
+      );
+    case 'mail':
+      return (
+        <Svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <Path fill="none" d="M0 0h24v24H0z" />
+
+          <G
+            fill="none"
+            stroke={color}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+          >
+            <Path d="M4 5h16c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1Z" />
+            <Path d="m3 6.5 9 5.5 9-5.5" />
+          </G>
+        </Svg>
+      );
+    case 'key':
+      return (
+        <Svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <Path
+            fill={color}
+            d="M7 5a7 7 0 1 0 6.707 9H18v3h4v-3h2v-4H13.707A7 7 0 0 0 7 5zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"
+          />
+        </Svg>
+      );
+    case 'eye':
+      return (
+        <Svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+        >
+          <Path fill="none" d="M0 0h24v24H0z" />
+
+          <Path
+            fill={color}
+            d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"
+          />
+        </Svg>
+      );
     default:
       return null;
   }

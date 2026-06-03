@@ -1,15 +1,15 @@
 import React from 'react';
-import TabNavigation from './src/Navigation/TabNavigation';
+import StackNavigation from './src/Navigation/StackNavigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const App = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-  <NavigationContainer>
-    <TabNavigation />
-  </NavigationContainer>
-</GestureHandlerRootView>
+      <NavigationContainer>
+        <StackNavigation />
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 };
 

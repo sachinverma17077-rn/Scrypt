@@ -4,53 +4,55 @@ import { FULL_HEIGHT } from '../../Constants/Dimensions'
 import AuthBackground from '../../Component/AuthBackground'
 import KeyboardWrapper from '../../Component/UI/KeyboardWrapper'
 import Input from '../../Component/UI/Input'
+import Header from '../../Component/UI/Header'
+import Typography from '../../Component/UI/Typography'
+import { Colors } from '../../Constants/colors'
+import Font from '../../Constants/Font'
 
 const Login = () => {
   return (
-        <View style={styles?.mainView}>
-          <AuthBackground >
-            <KeyboardWrapper>
-    
-            <View style={styles?.fieldCard}>
-    
-              <Input
-                title='First Name'
-                
-              />
-               <Input
-                title='Last Name'
-                
-              />
-              <Input
-                title='Email'
-                
-              />
-              <Input
-                title='Phone Number'
-                
-              />
-              
-            </View>
-            </KeyboardWrapper>
-          </AuthBackground>
+    <View style={styles?.mainView}>
+      <Header title='Scypt' styleMain={{ alignItems: "center" }} />
+      <View style={styles?.screenView}>
+        <View style={styles?.wellcomeText}>
+          <Typography size={36} color={Colors?.titleBlack} fontFamily={Font?.ExtraBold}>Welcome Back!</Typography>
+          <Typography style={{ marginTop: 10 }} size={16} color={Colors?.placeHolderColor} fontFamily={Font?.Medium}>Your friends and messages are waiting.</Typography>
+
         </View>
+        <View style={styles?.mainCard}>
+          <Input iconName='profile_Tab' title='FULL NAME' placeholder='Sachin Verma' placeholderTextColor={Colors?.placeHolderColor} />
+          <Input iconName='profile_Tab' title='FULL NAME' placeholder='Sachin Verma' placeholderTextColor={Colors?.placeHolderColor} />
+          <Input iconName='profile_Tab' title='FULL NAME' placeholder='Sachin Verma' placeholderTextColor={Colors?.placeHolderColor} />
+          <Input iconName='profile_Tab' title='FULL NAME' placeholder='Sachin Verma' placeholderTextColor={Colors?.placeHolderColor} />
+        </View>
+
+      </View>
+    </View>
   )
 }
 
 export default Login
 
 const styles = StyleSheet.create({
-    mainView: {
+  mainView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-
+    backgroundColor: Colors?.white
   },
-  fieldCard: {
-    backgroundColor: "white",
-    margin: 22,
-    marginTop: 150,
-    borderRadius: 20,
-    height: FULL_HEIGHT * 0.5,
-  }
+  screenView: {
+    padding: 22,
+    marginTop: 10,
+    justifyContent: "center",
+    // alignItems:"center"
+  },
+  wellcomeText: { alignItems: "center" },
+  mainCard: {
+    padding: 22,
+    backgroundColor: Colors?.white,
+    borderRadius: 24,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: Colors?.borderColor,
+    marginTop: 20
+  },
+
 })
