@@ -13,6 +13,10 @@ export type Icons =
   | 'mail'
   | 'key'
   | 'eye'
+  | 'device'
+  | 'eye_off'
+  | 'check'
+  | 'arrow_right'
 
 type Props = {
   size?: number;
@@ -23,7 +27,7 @@ type Props = {
 const SvgIcon: React.FC<Props> = ({
   name,
   size = 24,
-  color = '#4A90E2',
+  color = '#64748B',
 }) => {
   switch (name) {
     case 'right_arrow':
@@ -196,6 +200,74 @@ const SvgIcon: React.FC<Props> = ({
           />
         </Svg>
       );
+      case 'device':
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <Path fill="none" d="M0 0h24v24H0z" />
+
+      <Path
+        fill={color}
+        d="M7 23q-.825 0-1.412-.587T5 21V3q0-.825.588-1.412T7 1h10q.825 0 1.413.588T19 3v3.1q.45.175.725.55T20 7.5v2q0 .475-.275.85T19 10.9V21q0 .825-.587 1.413T17 23zm0-2h10V3H7zm0 0V3zm5.713-15.288Q13 5.425 13 5t-.288-.712T12 4t-.712.288T11 5t.288.713T12 6t.713-.288"
+      />
+    </Svg>
+  );
+  case 'eye_off':
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <Path fill="none" d="M0 0h24v24H0z" />
+
+      <Path
+        fill={color}
+        d="M11.83 9L15 12.16V12a3 3 0 0 0-3-3zm-4.3.8l1.55 1.55c-.05.21-.08.42-.08.65a3 3 0 0 0 3 3c.22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53a5 5 0 0 1-5-5c0-.79.2-1.53.53-2.2M2 4.27l2.28 2.28l.45.45C3.08 8.3 1.78 10 1 12c1.73 4.39 6 7.5 11 7.5c1.55 0 3.03-.3 4.38-.84l.43.42L19.73 22L21 20.73L3.27 3M12 7a5 5 0 0 1 5 5c0 .64-.13 1.26-.36 1.82l2.93 2.93c1.5-1.25 2.7-2.89 3.43-4.75c-1.73-4.39-6-7.5-11-7.5c-1.4 0-2.74.25-4 .7l2.17 2.15C10.74 7.13 11.35 7 12 7"
+      />
+    </Svg>
+  );
+  case 'check':
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <Path fill="none" d="M0 0h24v24H0z" />
+
+      <Path
+        fill="none"
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="m5 12l5 5L20 7"
+      />
+    </Svg>
+  );
+  case 'arrow_right':
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 1024 1024"
+      fill="none"
+    >
+      <Path d="M0 0h1024v1024H0z" fill="none" />
+
+      <Path
+        fill={color}
+        d="M754.8 480H160a32 32 0 1 0 0 64h594.8L521.3 777.3a32 32 0 0 0 45.4 45.4l288-288a32 32 0 0 0 0-45.4l-288-288a32 32 0 1 0-45.4 45.4z"
+      />
+    </Svg>
+  );
     default:
       return null;
   }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,13 +7,12 @@ import {
   TextStyle,
   TextInput,
   KeyboardTypeOptions,
+  TouchableOpacity,
 } from 'react-native';
 
 import Typography from './Typography';
 import Font from '../../Constants/Font';
-import {Colors} from '../../Constants/colors';
-import AppGradient from './GradientView';
-import {GradientColors} from '../../Constants/GradientColor';
+import { Colors } from '../../Constants/colors';
 import SvgIcon from '../../Constants/SvgIcon';
 
 interface InputProps {
@@ -28,10 +27,12 @@ interface InputProps {
   onFocus?: () => void;
   keyboardType?: KeyboardTypeOptions;
   error?: string;
-    textColor?: string; 
-    placeholder?:string;
-    iconName?:string;
-    
+  textColor?: string;
+  placeholder?: string;
+  iconName?: string;
+  secure?: boolean;
+  forgot?: boolean;
+  onForgotPress?:any
 }
 
 const Input = ({
@@ -41,64 +42,87 @@ const Input = ({
   value,
   onChange,
   styleInputView,
-  cursorColor,
-  placeholderTextColor,
+  cursorColor = '#000',
+  placeholderTextColor = '#64748B',
   onFocus,
   keyboardType = 'default',
   error,
-  textColor = '#000000ff',
-  placeholder = '#64748B' ,
-  iconName
+  textColor = '#000',
+  placeholder = '',
+  iconName,
+  secure = false,
+  forgot = false,
+  onForgotPress
 }: InputProps) => {
-  const [isFocused, setIsFocused] = useState(false);
-
-  const handleFocus = () => {
-    setIsFocused(true);
-    onFocus?.();
-  };
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View style={[styles.mainInput, style]}>
-      {!!title && (
+     <View style={{justifyContent:"space-between" ,flexDirection:"row"}}>
+       {!!title && (
         <Typography
-          fontFamily={Font?.Regular}
-          size={16}
-          color={Colors?.title}
-          style={[styles.title, titleStyle]}>
+          fontFamily={Font.Regular}
+          size={13}
+          color={Colors.title}
+          style={[styles.title, titleStyle]}
+        >
           {title}
         </Typography>
       )}
 
-      <View
-        style={[
-          styles.InputView,
-          styleInputView,
-         
-        ]}
+          {forgot && (
+        <TouchableOpacity onPress={onForgotPress}>
+          <Typography
+          fontFamily={Font.Regular}
+          size={13}
+          color={'#005DA7'}
+          style={[styles.title, titleStyle]}
         >
-         <View style={[styles?.firstIcon]}>
-           <SvgIcon name={iconName} color='#64748B' />
-         </View>
+         Forgot?
+        </Typography>
+        </TouchableOpacity>
+      )}
+     </View>
+
+      <View style={[styles.InputView, styleInputView]}>
+        {!!iconName && (
+          <View style={styles.firstIcon}>
+            <SvgIcon name={iconName} color="#64748B" />
+          </View>
+        )}
+
         <TextInput
           value={value}
           onChangeText={onChange}
-         style={[styles.input, {color: textColor}]}
+          style={[styles.input, { color: textColor }]}
           cursorColor={cursorColor}
           placeholderTextColor={placeholderTextColor}
           onFocus={onFocus}
-          // onBlur={() => setIsFocused(false)}
           keyboardType={keyboardType}
           placeholder={placeholder}
-          
-          
+          secureTextEntry={secure && !showPassword}
         />
+
+        {secure && (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => setShowPassword(prev => !prev)}
+            style={styles.eyeButton}
+          >
+            <SvgIcon
+              name={showPassword ? 'eye' : 'eye_off'}
+              color="#64748B"
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       {!!error && (
         <Typography
           size={14}
-          color={Colors?.errorText}
-          style={styles.errorText}>
+          color={Colors.errorText}
+          style={styles.errorText}
+        >
           {error}
         </Typography>
       )}
@@ -110,7 +134,7 @@ export default Input;
 
 const styles = StyleSheet.create({
   mainInput: {
-marginBottom:15
+    marginBottom: 15,
   },
 
   title: {
@@ -118,28 +142,35 @@ marginBottom:15
   },
 
   InputView: {
-    borderWidth:1,
-    borderColor:Colors?.inputBorderColor,
-    borderRadius:12,
-    height:55,
-    // justifyContent:'space-between',
-    flexDirection:"row",
-    alignItems:'center'
+    borderWidth: 1,
+    borderColor: Colors.inputBorderColor,
+    borderRadius: 12,
+    height: 55,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(173, 193, 237, 0.1)',
+  },
 
+  firstIcon: {
+    paddingLeft: 12,
   },
 
   input: {
-    paddingHorizontal: 16,
-    color: '#fff',
-    fontSize:18
-    // paddingVertical:20
+    flex: 1,
+    paddingHorizontal: 12,
+    fontSize: 16,
+    height: '100%',
+  },
+
+  eyeButton: {
+    paddingHorizontal: 15,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   errorText: {
     marginTop: 4,
     textAlign: 'right',
-  },
-  firstIcon:{
-paddingLeft:10
   },
 });

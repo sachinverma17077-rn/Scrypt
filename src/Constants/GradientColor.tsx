@@ -3,4 +3,5 @@ export const GradientColors = {
   secondary: ['#6A11CB', '#2575FC'],
   dark: ['#0F2027', '#203A43', '#2C5364'],
   authBg: ['#141E30', '#243B55'],
+  text:['#001C39','#005DA7']
 }

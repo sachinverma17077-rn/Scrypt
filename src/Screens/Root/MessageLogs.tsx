@@ -5,7 +5,7 @@ import React from 'react'
 const MessageLogs = ({ navigation }) => {
   return (
 <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-<TouchableOpacity onPress={()=>{navigation.navigate('Login')}}>
+<TouchableOpacity onPress={()=>{navigation.navigate('Signup')}}>
   <Text>Login Screen</Text>
 </TouchableOpacity>
 </View>
