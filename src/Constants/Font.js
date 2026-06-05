@@ -1,12 +1,12 @@
 export default {
-    Bold:'Poppins-Black',
-    ExtraBold:'Poppins-ExtraBold',
-    ExtraLight:'Poppins-ExtraLight',
-    Light:'Poppins-Light',
-    Medium:'Poppins-Medium',
-    Regular:'Poppins-Regular',
-    SemiBold:'Poppins-SemiBold',
-    Thin:'Poppins-Thin',
+    Bold:'Manrope-Bold',
+    ExtraBold:'Manrope-ExtraBold',
+    ExtraLight:'Manrope-ExtraLight',
+    Light:'Manrope-Light',
+    Medium:'Manrope-Medium',
+    Regular:'Manrope-Regular',
+    SemiBold:'Manrope-SemiBold',
+  
 
 }
 

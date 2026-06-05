@@ -73,7 +73,7 @@ const Input = ({
           {forgot && (
         <TouchableOpacity onPress={onForgotPress}>
           <Typography
-          fontFamily={Font.Regular}
+          fontFamily={Font?.SemiBold}
           size={13}
           color={'#005DA7'}
           style={[styles.title, titleStyle]}
