@@ -119,8 +119,9 @@ const Input = ({
 
       {!!error && (
         <Typography
-          size={14}
+          size={12}
           color={Colors.errorText}
+          fontFamily={Font?.Regular}
           style={styles.errorText}
         >
           {error}

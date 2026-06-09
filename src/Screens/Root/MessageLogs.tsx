@@ -2,10 +2,10 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 
 
-const MessageLogs = ({ navigation }) => {
+const MessageLogs = ({ navigation }:any) => {
   return (
 <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-<TouchableOpacity onPress={()=>{navigation.navigate('Signup')}}>
+<TouchableOpacity >
   <Text>Login Screen</Text>
 </TouchableOpacity>
 </View>

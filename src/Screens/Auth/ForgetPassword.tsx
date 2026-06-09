@@ -1,10 +1,9 @@
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 
 import AuthBackground from '../../Component/AuthBackground';
 import KeyboardWrapper from '../../Component/UI/KeyboardWrapper';
 import Input from '../../Component/UI/Input';
-import Header from '../../Component/UI/Header';
 import Typography from '../../Component/UI/Typography';
 
 import { Colors } from '../../Constants/colors';
@@ -12,11 +11,38 @@ import Font from '../../Constants/Font';
 import { FULL_HEIGHT, FULL_WIDTH } from '../../Constants/Dimensions';
 import SvgIcon from '../../Constants/SvgIcon';
 import Button from '../../Component/UI/Button'
-import GradientText from '../../Component/UI/GradientText';
-import { GradientColors } from '../../Constants/GradientColor';
-import Toggle from '../../Component/UI/Toggle';
+import { validators } from '../../Backend/validators';
 
 const ForgetPassword = ({ navigation }: any) => {
+    const [email, setEmail] = useState('');
+
+    type ForgotPasswordErrors = {
+        email?: string;
+    };
+
+    const [error, setError] = useState<ForgotPasswordErrors>({});
+    const handleSubmit = () => {
+        
+        const tempError: ForgotPasswordErrors = {};
+
+        const emailError = validators.checkEmail(
+            'Email',
+            email,
+        );
+
+        if (emailError) {
+            tempError.email = emailError;
+        }
+
+        setError(tempError);
+
+        if (Object.keys(tempError).length === 0) {
+            console.log('Send Reset Email');
+
+            // API Call
+            // navigation.navigate(...)
+        }
+    };
     return (
         <AuthBackground >
             {/* <Header title="Scypt" styleMain={{ alignItems: 'center' }} /> */}
@@ -34,7 +60,7 @@ const ForgetPassword = ({ navigation }: any) => {
 
 
                             <Typography style={{ fontSize: 28, fontFamily: Font?.Bold, marginTop: 25 }} color='#111C2D'  >Forgot Password?</Typography>
-                            <View style={{ justifyContent: "center", width: FULL_HEIGHT * 0.4, marginTop:10}}>
+                            <View style={{ justifyContent: "center", width: FULL_HEIGHT * 0.4, marginTop: 10 }}>
                                 <Typography style={{ marginTop: 5, alignSelf: "center" }} size={16} fontFamily={Font?.Regular} color='#414751'>No worries, it happens. Enter your email
                                 </Typography>
                                 <Typography style={{ marginTop: 5, alignSelf: "center" }} size={16} fontFamily={Font?.Regular} color='#414751'>and we'll send you a link to reset your
@@ -47,17 +73,29 @@ const ForgetPassword = ({ navigation }: any) => {
 
                         <View style={styles.mainCard}>
 
-
                             <Input
                                 iconName="mail"
                                 title="EMAIL ADDRESS"
+                                value={email}
+                                error={error.email}
+                                onChange={(text: string) => {
+                                    setEmail(text);
+
+                                    if (error.email) {
+                                        setError(prev => ({
+                                            ...prev,
+                                            email: undefined,
+                                        }));
+                                    }
+                                }}
                                 placeholder="Qwert@ABC.com"
                                 placeholderTextColor={Colors.placeHolderColor}
+                                keyboardType="email-address"
                             />
 
 
 
-                            <Button title='Unlock' style={{ marginTop: 15 }} icon={true} />
+                            <Button title='Unlock' style={{ marginTop: 15 }} icon={true} onPress={() => handleSubmit()} />
 
 
 
@@ -70,7 +108,7 @@ const ForgetPassword = ({ navigation }: any) => {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={{ alignSelf: "center", justifyContent: 'center', alignItems: "center" ,marginTop:10}}>
+                        <View style={{ alignSelf: "center", justifyContent: 'center', alignItems: "center", marginTop: 10 }}>
                             <Typography color='#414751' size={14} fontFamily={Font?.Regular}>Still having trouble?</Typography>
                             <TouchableOpacity style={styles?.Button}>
                                 <Typography size={16} color='#111C2D' fontFamily={Font?.Regular} >Contact Support</Typography>
@@ -169,7 +207,7 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         flexDirection: 'row',
         gap: 5,
-        marginTop:10
+        marginTop: 10
     },
 
 });

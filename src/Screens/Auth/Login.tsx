@@ -15,18 +15,31 @@ import Button from '../../Component/UI/Button'
 import GradientText from '../../Component/UI/GradientText';
 import { GradientColors } from '../../Constants/GradientColor';
 import Toggle from '../../Component/UI/Toggle';
+import { useDispatch } from 'react-redux';
+import { setLogin } from '../../Redux/authSlice';
+import { validators } from '../../Backend/validators';
 
 interface IconItem {
   id: string;
   icon: React.ReactNode;
 }
 
-const Login = ({navigation}:any) => {
+const Login = ({ navigation }: any) => {
   //**********************STATES***********************/  
   const [checked, setChecked] = useState(false)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  type LoginErrors = {
+    email?: string;
+    password?: string;
+  };
+
+  const [error, setError] = useState<LoginErrors>({});
+
   //**********************DATA***********************/ 
 
-
+  const dispatch = useDispatch();
   const icons: IconItem[] = [
     {
       id: '1',
@@ -41,6 +54,34 @@ const Login = ({navigation}:any) => {
       icon: <SvgIcon color='#005DA7' name="shield_lock" />,
     },
   ];
+  //**********************METHOD***********************/ 
+  const handleLogin = () => {
+    const tempError: LoginErrors = {};
+
+    const emailError = validators.checkEmail(
+      'Email',
+      email,
+    );
+
+    if (emailError) {
+      tempError.email = emailError;
+    }
+
+    const passwordError = validators.checkRequire(
+      'Password',
+      password,
+    );
+
+    if (passwordError) {
+      tempError.password = passwordError;
+    }
+
+    setError(tempError);
+
+    if (Object.keys(tempError).length === 0) {
+      dispatch(setLogin());
+    }
+  };
   return (
     <AuthBackground >
       {/* <Header title="Scypt" styleMain={{ alignItems: 'center' }} /> */}
@@ -102,8 +143,21 @@ const Login = ({navigation}:any) => {
               <Input
                 iconName="mail"
                 title="EMAIL ADDRESS"
+                value={email}
+                error={error.email}
+                onChange={(text: string) => {
+                  setEmail(text);
+
+                  if (error.email) {
+                    setError(prev => ({
+                      ...prev,
+                      email: undefined,
+                    }));
+                  }
+                }}
                 placeholder="Qwert@ABC.com"
                 placeholderTextColor={Colors.placeHolderColor}
+                keyboardType="email-address"
               />
 
 
@@ -111,18 +165,33 @@ const Login = ({navigation}:any) => {
                 secure
                 iconName="key"
                 title="PASSWORD"
+                value={password}
+                error={error.password}
+                onChange={(text: string) => {
+                  setPassword(text);
+
+                  if (error.password) {
+                    setError(prev => ({
+                      ...prev,
+                      password: undefined,
+                    }));
+                  }
+                }}
                 placeholder="Abcde@1234"
                 placeholderTextColor={Colors.placeHolderColor}
                 forgot={true}
-                onForgotPress={()=>{navigation.navigate('ForgetPassword')}}
+                onForgotPress={() => {
+                  navigation.navigate('ForgetPassword');
+                }}
               />
-
 
               <View style={styles?.rememberArea}>
                 <Toggle />
                 <Typography size={14} fontFamily={Font?.Regular} color='#414751'>Remember this device</Typography>
               </View>
-              <Button title='Unlock' style={{ marginTop: 30 }} icon={true} />
+              <Button title='Unlock' style={{ marginTop: 30 }} icon={true} onPress={() => {
+                handleLogin()
+              }} />
 
 
               <View style={styles?.authbar} >
@@ -152,7 +221,7 @@ const Login = ({navigation}:any) => {
 
             <View style={styles?.footer} >
               <Typography color='#64748B' size={16} fontFamily={Font?.Medium}>New to Scrypt? </Typography>
-              <TouchableOpacity onPress={()=>{navigation.goBack();}}>
+              <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                 <Typography color='#005DA7' size={16} fontFamily={Font?.Bold}> Create Account</Typography>
               </TouchableOpacity>
             </View>
@@ -175,8 +244,8 @@ const Login = ({navigation}:any) => {
                       shadowOffset: { width: 0, height: 1 },
                       shadowOpacity: 0.1,
                       shadowRadius: 2,
-                      borderWidth:1,
-                      borderColor:"#E2E8F0"
+                      borderWidth: 1,
+                      borderColor: "#E2E8F0"
                     }}
                   >
                     {item.icon}
