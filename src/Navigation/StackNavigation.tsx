@@ -8,6 +8,8 @@ import TabComponent from './TabNavigation';
 import MyProfile from '../Screens/Root/MyProfile';
 import Signup from '../Screens/Auth/Signup';
 import ForgetPassword from '../Screens/Auth/ForgetPassword';
+import OTPScreen from '../Screens/Auth/OTPScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +18,8 @@ const StackNavigation = () => {
  <Stack.Navigator screenOptions={{ headerShown: false }}>
   <Stack.Screen name="Login" component={Login} />
   <Stack.Screen name="Signup" component={Signup} />
+   <Stack.Screen name="OTPScreen" component={OTPScreen} />
+  
   <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
 </Stack.Navigator>
   )

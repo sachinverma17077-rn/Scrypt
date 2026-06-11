@@ -60,7 +60,7 @@ const Signup = ({ navigation }: any) => {
             tempError.email = emailError;
         }
 
-        const numberError = validators.checkPhoneNumber(
+        const numberError = validators.checkRequire(
             'Phone Number',
             number,
         );
@@ -93,7 +93,8 @@ const Signup = ({ navigation }: any) => {
         setError(tempError);
 
         if (Object.keys(tempError).length === 0) {
-            dispatch(setLogin());
+            // dispatch(setLogin());
+            navigation.navigate('OTPScreen')
         }
     };
 

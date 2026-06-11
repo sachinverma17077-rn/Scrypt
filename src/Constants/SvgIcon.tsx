@@ -24,6 +24,8 @@ export type Icons =
   | 'shield_check'
   | 'shield_lock'
   | 'arrow_left'
+  | 'mail_check'
+  | 'device_check'
 
 type Props = {
   size?: number;
@@ -369,6 +371,45 @@ const SvgIcon: React.FC<Props> = ({
         strokeLinejoin="round"
         strokeWidth={4}
         d="M31 36L19 24l12-12"
+      />
+    </Svg>
+  );
+  case 'mail_check':
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <Path d="M0 0h24v24H0z" fill="none" />
+
+      <G
+        fill="none"
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+      >
+        <Path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8" />
+
+        <Path d="m22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7m14 12l2 2l4-4" />
+      </G>
+    </Svg>
+  );
+  case 'device_check':
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      fill="none"
+    >
+      <Path d="M0 0h16v16H0z" fill="none" />
+
+      <Path
+        fill={color}
+        d="M11 10.978v2.272a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75V2.75A.75.75 0 0 1 5.75 2h.507a5.5 5.5 0 0 1 1.08-1H5.75A1.75 1.75 0 0 0 4 2.75v10.5c0 .966.784 1.75 1.75 1.75h4.5A1.75 1.75 0 0 0 12 13.25v-2.457a5.5 5.5 0 0 1-1 .185M6.5 12.5A.5.5 0 0 1 7 12h2a.5.5 0 0 1 0 1H7a.5.5 0 0 1-.5-.5m4-2.5a4.5 4.5 0 1 0 0-9a4.5 4.5 0 0 0 0 9m2.354-5.646l-3 3a.5.5 0 0 1-.708 0l-1-1a.5.5 0 1 1 .708-.708l.646.647l2.646-2.647a.5.5 0 0 1 .708.708"
       />
     </Svg>
   );
