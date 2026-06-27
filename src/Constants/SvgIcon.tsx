@@ -26,6 +26,12 @@ export type Icons =
   | 'arrow_left'
   | 'mail_check'
   | 'device_check'
+  | 'search'
+  | 'verified_badge'
+  | 'video_call'
+  | 'call_incoming'
+| 'call_outgoing'
+| 'call_missed'
 
 type Props = {
   size?: number;
@@ -410,6 +416,135 @@ const SvgIcon: React.FC<Props> = ({
       <Path
         fill={color}
         d="M11 10.978v2.272a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75V2.75A.75.75 0 0 1 5.75 2h.507a5.5 5.5 0 0 1 1.08-1H5.75A1.75 1.75 0 0 0 4 2.75v10.5c0 .966.784 1.75 1.75 1.75h4.5A1.75 1.75 0 0 0 12 13.25v-2.457a5.5 5.5 0 0 1-1 .185M6.5 12.5A.5.5 0 0 1 7 12h2a.5.5 0 0 1 0 1H7a.5.5 0 0 1-.5-.5m4-2.5a4.5 4.5 0 1 0 0-9a4.5 4.5 0 0 0 0 9m2.354-5.646l-3 3a.5.5 0 0 1-.708 0l-1-1a.5.5 0 1 1 .708-.708l.646.647l2.646-2.647a.5.5 0 0 1 .708.708"
+      />
+    </Svg>
+  );
+  case 'search':
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <Path d="M0 0h24v24H0z" fill="none" />
+
+      <Path
+        d="M21 21l-4.35-4.35"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M11 18a7 7 0 1 1 0-14a7 7 0 0 1 0 14Z"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+  case 'verified_badge':
+   return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      {/* Badge */}
+      <Path
+        fill={color}
+        d="M12 1.8l2.1 1.35 2.48-.62 1.34 2.17 2.47.74-.2 2.55 1.68 1.92-1.68 1.92.2 2.55-2.47.74-1.34 2.17-2.48-.62L12 22.2l-2.1-1.35-2.48.62-1.34-2.17-2.47-.74.2-2.55-1.68-1.92 1.68-1.92-.2-2.55 2.47-.74 1.34-2.17 2.48.62L12 1.8Z"
+      />
+
+      {/* Check */}
+      <Path
+        fill="#FFFFFF"
+        d="M10.3 15.7 7.4 12.8l1.2-1.2 1.7 1.7 4.9-4.9 1.2 1.2-6.1 6.1Z"
+      />
+    </Svg>
+  );
+  case 'video_call':
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <Path
+        d="M15 8.5V15.5C15 16.3284 14.3284 17 13.5 17H5.5C4.67157 17 4 16.3284 4 15.5V8.5C4 7.67157 4.67157 7 5.5 7H13.5C14.3284 7 15 7.67157 15 8.5Z"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      <Path
+        d="M15 10.5L20 8V16L15 13.5"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+  case 'call_incoming':
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M6 18L18 6"
+        stroke="#22C55E"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M10 6H18V14"
+        stroke="#22C55E"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+  case 'call_outgoing':
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M18 18L6 6"
+        stroke="#3B82F6"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M14 6H6V14"
+        stroke="#3B82F6"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+  case 'call_missed':
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M18 6L6 18"
+        stroke="#EF4444"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M6 6H18V18"
+        stroke="#EF4444"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </Svg>
   );
