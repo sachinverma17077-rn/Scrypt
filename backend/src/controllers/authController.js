@@ -193,47 +193,53 @@ const checkUserData = async (req,res)=>{
 };
 // forget password
 const sendOTP = async (req, res) => {
-    try {
-        const { phoneNumber } = req.body;
+  try {
+    const { phoneNumber } = req.body;
 
-        if (!phoneNumber) {
-            return res.status(400).json({
-                success: false,
-                message: 'Phone Number is required',
-                
-            });
-        }
-
-        const response =
-            await client.verify.v2
-                .services(process.env.TWILIO_VERIFY_SID)
-                .verifications.create({
-                    to: phoneNumber,
-                    channel: 'sms',
-                });
-
-        return res.status(200).json({
-            success: true,
-            message: 'OTP sent successfully',
-            status: response.status,
-             otp: '123456',
-        });
-    } catch (error) {
-        console.error('Send OTP Error:', error);
-
-        return res.status(500).json({
-            success: false,
-            message: 'Failed to send OTP',
-        });
+    if (!phoneNumber) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone Number is required",
+      });
     }
-};
 
+    // Twilio disabled for development
+    // const response = await client.verify.v2
+    //   .services(process.env.TWILIO_VERIFY_SID)
+    //   .verifications.create({
+    //     to: phoneNumber,
+    //     channel: "sms",
+    //   });
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully",
+      status: "pending",
+      otp: "000000",
+    });
+  } catch (error) {
+    console.error("Send OTP Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send OTP",
+    });
+  }
+};
 
 const verifyOTP = async (req, res) => {
     try {
         const { otp } = req.body;
 
-        if (otp !== '123456') {
+        if (!otp) {
+            return res.status(400).json({
+                success: false,
+                message: 'OTP is required',
+            });
+        }
+
+        // Development OTP
+        if (otp !== '000000') {
             return res.status(400).json({
                 success: false,
                 message: 'Invalid OTP',
@@ -245,6 +251,8 @@ const verifyOTP = async (req, res) => {
             message: 'OTP Verified Successfully',
         });
     } catch (error) {
+        console.error('Verify OTP Error:', error);
+
         return res.status(500).json({
             success: false,
             message: 'Verification Failed',

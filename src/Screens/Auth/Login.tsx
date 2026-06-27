@@ -21,6 +21,8 @@ import { validators } from '../../Backend/validators';
 import apiService from '../../api/apiService';
 import { LoginRequest, LoginResponse } from '../../types/auth';
 import { ENDPOINTS } from '../../api/endpoints';
+import { BASE_URL } from '../../api/env';
+import axios, { AxiosError } from "axios";
 
 interface IconItem {
   id: string;
@@ -88,16 +90,28 @@ const Login = ({ navigation }: any) => {
         password
       }
       console.log('body', body);
+      console.log('url', `${BASE_URL}${ENDPOINTS?.LOGIN}`);
+
 
       try {
         const response = await apiService?.post<LoginResponse>(
           ENDPOINTS?.LOGIN,
           body
+
         );
         console.log('response', response);
-
+        dispatch(
+          setLogin({
+            email,
+          }),
+        );
       } catch (error) {
-        console.log(error);
+        if (axios.isAxiosError(error)) {
+          console.log(error.response?.status);
+          console.log(error.response?.data);
+        } else {
+          console.log(error);
+        }
       }
       // dispatch(
       //   setLogin({

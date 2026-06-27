@@ -15,9 +15,14 @@ import Button from '../../Component/UI/Button'
 import { validators } from '../../Backend/validators';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../../Redux/authSlice';
+import apiService from '../../api/apiService';
+import { CheckUserRequest, CheckUserResponse } from '../../types/auth';
+import { ENDPOINTS } from '../../api/endpoints';
+import axios from 'axios';
 
 type SignupErrors = {
     name?: string;
+    userName?: string;
     email?: string;
     number?: string;
     password?: string;
@@ -30,14 +35,18 @@ const Signup = ({ navigation }: any) => {
     //**********************STATES***********************/  
     const [checked, setChecked] = useState(false)
     const [name, setName] = useState('');
+    const [UserName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [number, setNumber] = useState('');
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState<SignupErrors>({})
+    const [error, setError] = useState<SignupErrors>({});
+    const [userData, serUserData] = useState({});
+    console.log('userData', userData);
+
 
     //**********************METHODS***********************/  
-    const handleSignup = () => {
+    const handleSignup = async () => {
         const tempError: SignupErrors = {};
 
         const nameError = validators.checkAlphabet(
@@ -49,6 +58,15 @@ const Signup = ({ navigation }: any) => {
 
         if (nameError) {
             tempError.name = nameError;
+        }
+        const userNameError = validators.checkAlphabet(
+            'Unic Name',
+            name,
+            2,
+            50,
+        );
+        if (userNameError) {
+            tempError.name = userNameError;
         }
 
         const emailError = validators.checkEmail(
@@ -93,8 +111,44 @@ const Signup = ({ navigation }: any) => {
         setError(tempError);
 
         if (Object.keys(tempError).length === 0) {
+            const data = {
+                name: name,
+                email: email,
+                number: number,
+                password: password,
+                checked: checked,
+                userName:UserName,
+            }
+            serUserData(data)
+
             // dispatch(setLogin());
-            navigation.navigate('OTPScreen')
+            // navigation.navigate('OTPScreen')
+            const body: CheckUserRequest = {
+                email: email,
+                userName: UserName,
+                phoneNumber: number,
+
+            }
+
+            try {
+                const response = await apiService?.post<CheckUserResponse>(
+                    ENDPOINTS?.CHECK_USER_DATA,
+                    body
+                )
+                console.log('response', response);
+                if(response?.success==true){
+                    navigation.navigate('OTPScreen',{data:userData})
+                }
+
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    console.log(error.response?.status);
+                    console.log(error.response?.data);
+                } else {
+                    console.log(error);
+                }
+            }
+
         }
     };
 
@@ -143,6 +197,25 @@ const Signup = ({ navigation }: any) => {
                                 }}
                                 error={error?.name}
                                 placeholder="Sachin Verma"
+                                placeholderTextColor={Colors.placeHolderColor}
+                            />
+
+                            <Input
+                                iconName="profile_Tab"
+                                title="Unic Name"
+                                value={UserName}
+                                onChange={(text: string) => {
+                                    setUserName(text);
+
+                                    if (error.userName) {
+                                        setError(prev => ({
+                                            ...prev,
+                                            userName: undefined,
+                                        }));
+                                    }
+                                }}
+                                error={error?.userName}
+                                placeholder="Mind_Hunter"
                                 placeholderTextColor={Colors.placeHolderColor}
                             />
 
@@ -248,7 +321,7 @@ const Signup = ({ navigation }: any) => {
                                     size={12}
                                     color={Colors.errorText}
                                     fontFamily={Font.Regular}
-                                    style={{ marginTop: 5,textAlign:"right" }}
+                                    style={{ marginTop: 5, textAlign: "right" }}
                                 >
                                     {error.terms}
                                 </Typography>

@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import AuthBackground from '../../Component/AuthBackground';
 import KeyboardWrapper from '../../Component/UI/KeyboardWrapper';
@@ -19,6 +19,11 @@ import { useDispatch } from 'react-redux';
 import { setLogin } from '../../Redux/authSlice';
 import { validators } from '../../Backend/validators';
 import OTPInput from '../../Component/UI/OTPInput';
+import { useIsFocused, useRoute } from '@react-navigation/native';
+import { RegisterRequest, RegisterResponse, SendOTPRequest, SendOTPResponse, VerifyOTPRequest, VerifyOTPResponse } from '../../types/auth';
+import apiService from '../../api/apiService';
+import { ENDPOINTS } from '../../api/endpoints';
+import axios from 'axios';
 
 interface IconItem {
   id: string;
@@ -26,63 +31,141 @@ interface IconItem {
 }
 
 const OTPScreen = ({ navigation }: any) => {
-  //**********************STATES***********************/  
-  const [checked, setChecked] = useState(false)
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  //**********************CONSTANCE***********************/  
+  const route = useRoute();
 
-  type LoginErrors = {
-    email?: string;
-    password?: string;
+
+
+  const { data } = route.params as {
+    data: {
+      name: string;
+      email: string;
+      number: string;
+      password: string;
+      checked: boolean;
+      userName: string;
+    };
   };
 
-  const [error, setError] = useState<LoginErrors>({});
+  console.log(data);
 
-  //**********************DATA***********************/ 
+
 
   const dispatch = useDispatch();
-  const icons: IconItem[] = [
-    {
-      id: '1',
-      icon: <SvgIcon color='#005DA7' name="shield" />,
-    },
-    {
-      id: '2',
-      icon: <SvgIcon color='#005DA7' name="shield_check" />,
-    },
-    {
-      id: '3',
-      icon: <SvgIcon color='#005DA7' name="shield_lock" />,
-    },
-  ];
-  //**********************METHOD***********************/ 
-  const handleLogin = () => {
-    const tempError: LoginErrors = {};
+  const isFocused = useIsFocused();
 
-    const emailError = validators.checkEmail(
-      'Email',
-      email,
-    );
 
-    if (emailError) {
-      tempError.email = emailError;
+  //**********************STATE***********************/ y 
+  const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
+  //**********************HOOKES***********************/ y 
+  useEffect(() => {
+    if (isFocused) {
+      handleSendOtp()
+    }
+  }, [isFocused])
+
+  //**********************API***********************/ 
+
+  const handleSendOtp = async () => {
+    const body: SendOTPRequest = {
+      phoneNumber: data?.number
+    }
+    console.log('body', body);
+
+    try {
+      const response = await apiService?.post<SendOTPResponse>(
+        ENDPOINTS?.SEND_OTP,
+        body
+      )
+      console.log('response', response);
+
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log('error status', error.response?.status);
+        console.log('error data', error.response?.data);
+      } else {
+        console.log('error ', error);
+      }
+    }
+  }
+
+
+  const handleVerifyOTP = async () => {
+    if (!otp.trim()) {
+      setOtpError('OTP is required');
+      return;
     }
 
-    const passwordError = validators.checkRequire(
-      'Password',
-      password,
-    );
+    if (otp.length !== 6) {
+      setOtpError('Please enter a valid 6-digit OTP');
+      return;
+    } else {
 
-    if (passwordError) {
-      tempError.password = passwordError;
+      const body: VerifyOTPRequest = {
+        otp: otp
+      }
+      console.log('body', body);
+
+      try {
+        const response = await apiService?.post<VerifyOTPResponse>(
+          ENDPOINTS?.VERIFY_OTP,
+          body
+        )
+        console.log('response', response);
+        if(response?.success==true){
+          handleRegisterUser()
+        }
+
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log('error status', error.response?.status);
+          console.log('error data', error.response?.data);
+        } else {
+          console.log('error ', error);
+        }
+      }
     }
 
-    setError(tempError);
 
-    if (Object.keys(tempError).length === 0) {
-      // dispatch(setLogin());
-    }
+
+
+
   };
+
+  const handleRegisterUser = async () => {
+    const body: RegisterRequest = {
+      name: data?.name,
+      email: data?.email,
+      phoneNumber: data?.number,
+      password: data?.password,
+      checked: data?.checked,
+      userName: data?.userName
+    }
+
+    try{
+      const response = await apiService?.post<RegisterResponse>(
+        ENDPOINTS?.REGISTER_USER,
+        body
+      ) 
+        if(response?.success==true){
+          dispatch(setLogin(response?.data));
+        }
+      
+      console.log('register user',response);
+      
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.log('error status', error.response?.status);
+          console.log('error data', error.response?.data);
+        } else {
+          console.log('error ', error);
+        }
+      }
+  }
+
+
+  //**********************MAINUI***********************/ 
   return (
     <AuthBackground >
       {/* <Header title="Scypt" styleMain={{ alignItems: 'center' }} /> */}
@@ -144,10 +227,20 @@ const OTPScreen = ({ navigation }: any) => {
                 </Typography>
               </View>
 
-              <OTPInput />
-
+              <OTPInput
+                onTextChange={(text) => {
+                  setOtp(text);
+                  setOtpError('');
+                }}
+              />
+              {otpError && (
+                <Typography textAlign='right' color="red" size={12} fontFamily={Font?.Regular} style={{ marginTop: 5 }} >
+                  {otpError}
+                </Typography>
+              )}
               <Button title='Verify & Proceed' style={{ marginTop: 30 }} icon={true} onPress={() => {
-                handleLogin()
+                // dispatch(setLogin());
+                handleVerifyOTP();
               }} />
               <View style={styles?.textarea}>
                 <Typography color='#64748B' size={16} fontFamily={Font?.Regular}>Didn't receive the code?</Typography>
@@ -155,7 +248,7 @@ const OTPScreen = ({ navigation }: any) => {
                   <Typography color='#3B82F6' size={16} fontFamily={Font?.Regular}>Resend Code</Typography>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={()=>{navigation.goBack()}} style={styles?.backtologin}>
+                <TouchableOpacity onPress={() => { navigation.goBack() }} style={styles?.backtologin}>
                   <SvgIcon size={18} name={'arrow_left'} />
                   <Typography>Back to login</Typography>
                 </TouchableOpacity>
