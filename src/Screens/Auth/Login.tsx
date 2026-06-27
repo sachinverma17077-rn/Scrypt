@@ -18,6 +18,9 @@ import Toggle from '../../Component/UI/Toggle';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../../Redux/authSlice';
 import { validators } from '../../Backend/validators';
+import apiService from '../../api/apiService';
+import { LoginRequest, LoginResponse } from '../../types/auth';
+import { ENDPOINTS } from '../../api/endpoints';
 
 interface IconItem {
   id: string;
@@ -55,7 +58,7 @@ const Login = ({ navigation }: any) => {
     },
   ];
   //**********************METHOD***********************/ 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const tempError: LoginErrors = {};
 
     const emailError = validators.checkEmail(
@@ -79,7 +82,28 @@ const Login = ({ navigation }: any) => {
     setError(tempError);
 
     if (Object.keys(tempError).length === 0) {
-      dispatch(setLogin());
+
+      const body: LoginRequest = {
+        email,
+        password
+      }
+      console.log('body', body);
+
+      try {
+        const response = await apiService?.post<LoginResponse>(
+          ENDPOINTS?.LOGIN,
+          body
+        );
+        console.log('response', response);
+
+      } catch (error) {
+        console.log(error);
+      }
+      // dispatch(
+      //   setLogin({
+      //     email,
+      //   }),
+      // );
     }
   };
   return (
@@ -252,7 +276,11 @@ const Login = ({ navigation }: any) => {
                   </View>
                 ))}
               </View>
-              <Typography style={{ alignSelf: "center", marginTop: 10 }} size={12} fontFamily={Font?.Regular} color='#94A3B8'>END-TO-END ENCRYPTED PROTOCOL.</Typography>
+              <View style={{ flexDirection: 'row', alignSelf: 'center', justifyContent: 'center', alignItems: 'center', gap: 2, marginTop: 15 }}>
+                <SvgIcon name={'shield_check'} />
+                <Typography style={{ alignSelf: "center" }} size={12} fontFamily={Font?.Regular} color='#94A3B8'>END-TO-END ENCRYPTED PROTOCOL.</Typography>
+
+              </View>
 
             </View>
           </View>
