@@ -112,7 +112,7 @@ const loginUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: 'User not found',
+                message: 'No account found with this email. Please sign up to get started.',
             });
         }
 

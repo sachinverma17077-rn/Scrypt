@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 
 import AuthBackground from '../../Component/AuthBackground';
@@ -34,6 +34,7 @@ const Login = ({ navigation }: any) => {
   const [checked, setChecked] = useState(false)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading,serLoading] = useState(false)
 
   type LoginErrors = {
     email?: string;
@@ -61,6 +62,7 @@ const Login = ({ navigation }: any) => {
   ];
   //**********************METHOD***********************/ 
   const handleLogin = async () => {
+    serLoading(true)
     const tempError: LoginErrors = {};
 
     const emailError = validators.checkEmail(
@@ -99,6 +101,7 @@ const Login = ({ navigation }: any) => {
           body
 
         );
+         serLoading(false)
         console.log('response', response);
         dispatch(
           setLogin({
@@ -106,6 +109,7 @@ const Login = ({ navigation }: any) => {
           }),
         );
       } catch (error) {
+        serLoading(false)
         if (axios.isAxiosError(error)) {
           console.log(error.response?.status);
           console.log(error.response?.data);
@@ -223,11 +227,11 @@ const Login = ({ navigation }: any) => {
                 }}
               />
 
-              <View style={styles?.rememberArea}>
+              {/* <View style={styles?.rememberArea}>
                 <Toggle />
                 <Typography size={14} fontFamily={Font?.Regular} color='#414751'>Remember this device</Typography>
-              </View>
-              <Button title='Unlock' style={{ marginTop: 30 }} icon={true} onPress={() => {
+              </View> */}
+              <Button title='Unlock' style={{ marginTop: 30 }} icon={true} loading={loading} onPress={() => {
                 handleLogin()
               }} />
 
@@ -244,13 +248,13 @@ const Login = ({ navigation }: any) => {
                   <SvgIcon name={'google'} />
                   <Typography size={14} color='#111C2D' fontFamily={Font?.Regular}>Google</Typography>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles?.Button}>
 
+               {Platform.OS == "ios"  &&( <TouchableOpacity style={styles?.Button}>
                   <SvgIcon name={'apple'} />
                   <Typography size={14} color='#111C2D' fontFamily={Font?.Regular}>Apple</Typography>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles?.Button}>
+                </TouchableOpacity>)}
 
+                <TouchableOpacity style={styles?.Button}>
                   <SvgIcon name={'facebook'} />
                   <Typography size={14} color='#111C2D' fontFamily={Font?.Regular}>FaceBook</Typography>
                 </TouchableOpacity>
@@ -364,7 +368,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   authButtons: {
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     flexDirection: "row",
     marginTop: 20
   },

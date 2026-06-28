@@ -24,6 +24,7 @@ import { RegisterRequest, RegisterResponse, SendOTPRequest, SendOTPResponse, Ver
 import apiService from '../../api/apiService';
 import { ENDPOINTS } from '../../api/endpoints';
 import axios from 'axios';
+import { useSafeAreaFrame } from 'react-native-safe-area-context';
 
 interface IconItem {
   id: string;
@@ -58,6 +59,7 @@ const OTPScreen = ({ navigation }: any) => {
   //**********************STATE***********************/ y 
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState("");
+  const [loading,setLoading] = useState(false)
   //**********************HOOKES***********************/ y 
   useEffect(() => {
     if (isFocused) {
@@ -68,6 +70,7 @@ const OTPScreen = ({ navigation }: any) => {
   //**********************API***********************/ 
 
   const handleSendOtp = async () => {
+    
     const body: SendOTPRequest = {
       phoneNumber: data?.number
     }
@@ -92,6 +95,7 @@ const OTPScreen = ({ navigation }: any) => {
 
 
   const handleVerifyOTP = async () => {
+    setLoading(true)
     if (!otp.trim()) {
       setOtpError('OTP is required');
       return;
@@ -108,16 +112,19 @@ const OTPScreen = ({ navigation }: any) => {
       console.log('body', body);
 
       try {
+
         const response = await apiService?.post<VerifyOTPResponse>(
           ENDPOINTS?.VERIFY_OTP,
           body
-        )
+        );
+        setLoading(false)
         console.log('response', response);
         if(response?.success==true){
           handleRegisterUser()
         }
 
       } catch (error) {
+        setLoading(false)
         if (axios.isAxiosError(error)) {
           console.log('error status', error.response?.status);
           console.log('error data', error.response?.data);
@@ -238,7 +245,7 @@ const OTPScreen = ({ navigation }: any) => {
                   {otpError}
                 </Typography>
               )}
-              <Button title='Verify & Proceed' style={{ marginTop: 30 }} icon={true} onPress={() => {
+              <Button title='Verify & Proceed' style={{ marginTop: 30 }} loading={loading} icon={true} onPress={() => {
                 // dispatch(setLogin());
                 handleVerifyOTP();
               }} />

@@ -42,11 +42,13 @@ const Signup = ({ navigation }: any) => {
     const [confirmpassword, setConfirmPassword] = useState('');
     const [error, setError] = useState<SignupErrors>({});
     const [userData, serUserData] = useState({});
+    const [loading,setLoading] = useState(false)
     console.log('userData', userData);
 
 
     //**********************METHODS***********************/  
     const handleSignup = async () => {
+        setLoading(true)
         const tempError: SignupErrors = {};
 
         const nameError = validators.checkAlphabet(
@@ -60,13 +62,14 @@ const Signup = ({ navigation }: any) => {
             tempError.name = nameError;
         }
         const userNameError = validators.checkAlphabet(
-            'Unic Name',
-            name,
+            'Unique Name',
+            UserName,
             2,
             50,
         );
+
         if (userNameError) {
-            tempError.name = userNameError;
+            tempError.userName = userNameError;
         }
 
         const emailError = validators.checkEmail(
@@ -117,7 +120,7 @@ const Signup = ({ navigation }: any) => {
                 number: number,
                 password: password,
                 checked: checked,
-                userName:UserName,
+                userName: UserName,
             }
             serUserData(data)
 
@@ -135,12 +138,14 @@ const Signup = ({ navigation }: any) => {
                     ENDPOINTS?.CHECK_USER_DATA,
                     body
                 )
+                setLoading(false)
                 console.log('response', response);
-                if(response?.success==true){
-                    navigation.navigate('OTPScreen',{data:userData})
+                if (response?.success == true) {
+                    navigation.navigate('OTPScreen', { data: userData })
                 }
 
             } catch (error) {
+                setLoading(false)
                 if (axios.isAxiosError(error)) {
                     console.log(error.response?.status);
                     console.log(error.response?.data);
@@ -156,7 +161,7 @@ const Signup = ({ navigation }: any) => {
     return (
         <AuthBackground>
             <Header title="Scypt" styleMain={{ alignItems: 'center' }} />
-            <ScrollView>
+          
                 <KeyboardWrapper>
 
                     <View style={styles.screenView}>
@@ -202,7 +207,7 @@ const Signup = ({ navigation }: any) => {
 
                             <Input
                                 iconName="profile_Tab"
-                                title="Unic Name"
+                                title="UNIQUE NAME"
                                 value={UserName}
                                 onChange={(text: string) => {
                                     setUserName(text);
@@ -218,6 +223,7 @@ const Signup = ({ navigation }: any) => {
                                 placeholder="Mind_Hunter"
                                 placeholderTextColor={Colors.placeHolderColor}
                             />
+                            <Typography size={12} fontFamily={Font?.Regular} color={Colors?.placeHolderColor} style={{ marginBottom: 5, width: FULL_WIDTH * 0.7 }}>Let's create your unique identity. Choose a username that represents you.</Typography>
 
                             <Input
                                 iconName="mail"
@@ -277,7 +283,7 @@ const Signup = ({ navigation }: any) => {
                                 placeholder="Abcde@1234"
                                 placeholderTextColor={Colors.placeHolderColor}
                                 error={error?.password}
-                                keyboardType='visible-password'
+                                
                             />
                             <Typography size={12} fontFamily={Font?.Regular} color={Colors?.placeHolderColor} style={{ marginBottom: 5, width: FULL_WIDTH * 0.7 }}>Must be at least 8 characters with letters and
                                 numbers.</Typography>
@@ -326,7 +332,7 @@ const Signup = ({ navigation }: any) => {
                                     {error.terms}
                                 </Typography>
                             )}
-                            <Button title='Create Account' style={{ marginTop: 30 }} icon={true} onPress={() => { handleSignup() }} />
+                            <Button title='Create Account' style={{ marginTop: 30 }} icon={true} loading={loading} onPress={() => { handleSignup() }} />
                         </View>
 
                         <View style={styles?.footer} >
@@ -337,7 +343,7 @@ const Signup = ({ navigation }: any) => {
                         </View>
                     </View>
                 </KeyboardWrapper>
-            </ScrollView>
+          
         </AuthBackground>
     );
 };

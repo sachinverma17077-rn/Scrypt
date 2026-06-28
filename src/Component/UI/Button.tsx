@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   ViewStyle,
   StyleProp,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -16,7 +17,8 @@ interface ButtonProps {
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
-  icon?:boolean
+  icon?: boolean;
+  loading?: boolean;
 }
 
 const Button = ({
@@ -24,31 +26,41 @@ const Button = ({
   onPress,
   style,
   disabled = false,
-  icon
+  icon = false,
+  loading = false,
 }: ButtonProps) => {
   return (
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={onPress}
-      disabled={disabled}
+      disabled={disabled || loading}
     >
       <LinearGradient
         style={[styles.gradient, style]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        colors={
-      ['#005DA7', '#2976C7']
-            
-        }
+        colors={['#005DA7', '#2976C7']}
       >
-        <Typography
-          color="#FFFFFF"
-          size={18}
-          fontFamily={Font?.Bold}
-        >
-          {title}
-        </Typography>
-        {icon&&(<SvgIcon name={'arrow_right'} color='white'/>)}
+        {loading ? (
+          <ActivityIndicator size="small" color="#FFFFFF" />
+        ) : (
+          <>
+            <Typography
+              color="#FFFFFF"
+              size={18}
+              fontFamily={Font?.Bold}
+            >
+              {title}
+            </Typography>
+
+            {icon && (
+              <SvgIcon
+                name="arrow_right"
+                color="white"
+              />
+            )}
+          </>
+        )}
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -63,7 +75,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    flexDirection:"row",
-    gap:10
+    flexDirection: 'row',
+    gap: 10,
   },
 });
