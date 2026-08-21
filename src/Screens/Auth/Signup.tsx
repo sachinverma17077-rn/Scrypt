@@ -41,9 +41,9 @@ const Signup = ({ navigation }: any) => {
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmPassword] = useState('');
     const [error, setError] = useState<SignupErrors>({});
-    const [userData, serUserData] = useState({});
+   
     const [loading,setLoading] = useState(false)
-    console.log('userData', userData);
+
 
 
     //**********************METHODS***********************/  
@@ -114,7 +114,7 @@ const Signup = ({ navigation }: any) => {
         setError(tempError);
 
         if (Object.keys(tempError).length === 0) {
-            const data = {
+            const userData = {
                 name: name,
                 email: email,
                 number: number,
@@ -122,7 +122,7 @@ const Signup = ({ navigation }: any) => {
                 checked: checked,
                 userName: UserName,
             }
-            serUserData(data)
+    
 
             // dispatch(setLogin());
             // navigation.navigate('OTPScreen')
@@ -201,7 +201,7 @@ const Signup = ({ navigation }: any) => {
                                     }
                                 }}
                                 error={error?.name}
-                                placeholder="Sachin Verma"
+                                placeholder="levi Ackerman"
                                 placeholderTextColor={Colors.placeHolderColor}
                             />
 

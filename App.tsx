@@ -9,9 +9,13 @@ import GlobalToast from './src/Backend/GlobalToast';
 import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
-  useEffect(() => {
+ useEffect(() => {
+  const timer = setTimeout(() => {
     SplashScreen.hide();
-  }, []);
+  }, 3000);
+
+  return () => clearTimeout(timer);
+}, []);
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

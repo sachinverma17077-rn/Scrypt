@@ -62,7 +62,7 @@ const MyAccount = ({navigation}:any) => {
           <View style={styles?.profileImageBG} >
             <Image source={Images?.profile} style={styles?.profileImage} />
           </View>
-          <Typography style={{ marginTop: 10 }} size={28} color='Black' fontFamily={Font?.Bold}>Alex Rivera</Typography>
+          <Typography style={{ marginTop: 10 }} size={28} color='Black' fontFamily={Font?.Bold}>Kratos</Typography>
           <Typography style={{ marginTop: 5 }} size={16} fontFamily={Font?.SemiBold}>Product Designer & Developer</Typography>
           {isPrimiumUser ? (<View style={styles?.primiumBadge}>
             <SvgIcon color='#3B82F6' name='verified_badge' size={20} />
@@ -86,7 +86,7 @@ const MyAccount = ({navigation}:any) => {
           />
 
         </View>
-        <Button style={styles?.logoutButton} title='Logout' onPress={() => dispatch(setLogout())} />
+        <Button style={styles?.logoutButton} title='Logout' onPress={() =>{ dispatch(setLogout());globalThis.ToastMessage?.('Logged out successfully', 'success');}} />
       </ScrollView>
     </View>
   )

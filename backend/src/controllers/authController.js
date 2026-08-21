@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const generateToken = require('../utils/generateToken');
-const client = require('../config/twilio');
+
 
 // Register User
 const registerUser = async (req, res) => {
@@ -203,14 +203,7 @@ const sendOTP = async (req, res) => {
       });
     }
 
-    // Twilio disabled for development
-    // const response = await client.verify.v2
-    //   .services(process.env.TWILIO_VERIFY_SID)
-    //   .verifications.create({
-    //     to: phoneNumber,
-    //     channel: "sms",
-    //   });
-
+  
     return res.status(200).json({
       success: true,
       message: "OTP sent successfully",
@@ -259,10 +252,135 @@ const verifyOTP = async (req, res) => {
         });
     }
 };
+const changePassword = async (req, res) => {
+    try {
+        const { phoneNumber, newPassword } = req.body;
+
+        if (!phoneNumber || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone Number and New Password are required',
+            });
+        }
+
+        const user = await User.findOne({
+            phoneNumber,
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(
+            newPassword,
+            10
+        );
+
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Password changed successfully',
+        });
+    } catch (error) {
+        console.error(
+            'Change Password Error:',
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+        });
+    }
+};
+
+const resetPassword = async (req, res) => {
+    try {
+        const {
+            oldPassword,
+            newPassword,
+        } = req.body;
+
+        if (
+            !oldPassword 
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: 'Old Password is required',
+            });
+        }
+
+         if (
+           !newPassword
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: 'New Password is required',
+            });
+        }
+
+        
+
+        const user = await User.findById(
+            req.user.id
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
+
+        const isMatch =
+            await bcrypt.compare(
+                oldPassword,
+                user.password
+            );
+
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    'Old Password is incorrect',
+            });
+        }
+
+        user.password =
+            await bcrypt.hash(
+                newPassword,
+                10
+            );
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message:
+                'Password updated successfully',
+        });
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message:
+                'Internal Server Error',
+        });
+    }
+};
 module.exports = {
     registerUser,
     loginUser,
     checkUserData,
     sendOTP,
     verifyOTP,
+    changePassword,
+    resetPassword,
 };

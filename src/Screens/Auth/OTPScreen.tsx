@@ -48,7 +48,7 @@ const OTPScreen = ({ navigation }: any) => {
     };
   };
 
-  console.log(data);
+  console.log('dataaaaaaaa',data);
 
 
 

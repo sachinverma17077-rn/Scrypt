@@ -243,18 +243,18 @@ const Login = ({ navigation }: any) => {
               </View>
 
               <View style={styles?.authButtons} >
-                <TouchableOpacity style={styles?.Button}>
+                <TouchableOpacity style={styles?.Button} onPress={()=>{globalThis.ToastMessage?.('Coming Soon', 'success')}}>
 
                   <SvgIcon name={'google'} />
                   <Typography size={14} color='#111C2D' fontFamily={Font?.Regular}>Google</Typography>
                 </TouchableOpacity>
 
-               {Platform.OS == "ios"  &&( <TouchableOpacity style={styles?.Button}>
+               {Platform.OS == "ios"  &&( <TouchableOpacity style={styles?.Button} onPress={()=>{globalThis.ToastMessage?.('Coming Soon', 'success')}}>
                   <SvgIcon name={'apple'} />
                   <Typography size={14} color='#111C2D' fontFamily={Font?.Regular}>Apple</Typography>
                 </TouchableOpacity>)}
 
-                <TouchableOpacity style={styles?.Button}>
+                <TouchableOpacity style={styles?.Button} onPress={()=>{globalThis.ToastMessage?.('Coming Soon', 'success')}}>
                   <SvgIcon name={'facebook'} />
                   <Typography size={14} color='#111C2D' fontFamily={Font?.Regular}>FaceBook</Typography>
                 </TouchableOpacity>
