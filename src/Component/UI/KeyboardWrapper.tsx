@@ -10,6 +10,7 @@ import {
   StyleProp,
   KeyboardEvent,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 interface KeyboardAvoidingProps {
   children: ReactNode;
@@ -74,13 +75,15 @@ const KeyboardWrapper = ({
       behavior={behavior}
       keyboardVerticalOffset={keyboardVerticalOffset}
     >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContainer}
-        keyboardShouldPersistTaps="handled"
-      >
+       <KeyboardAwareScrollView
+    enableOnAndroid
+    extraScrollHeight={50}
+    keyboardShouldPersistTaps="handled"
+    showsVerticalScrollIndicator={false}
+    contentContainerStyle={styles.scrollContainer}
+  >
         <View style={styles.inner}>{children}</View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </KeyboardAvoidingView>
   );
 };

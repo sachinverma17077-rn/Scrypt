@@ -10,7 +10,7 @@ interface OTPInputProps {
   secureTextEntry?: boolean;
   focusColor?: string;
   placeholder?: string;
-  onTextChange: (text: string) => void;
+  onTextChange?: (text: string) => void;
   onFilled?: (text: string) => void;
 }
 
@@ -28,7 +28,6 @@ const OTPInput: React.FC<OTPInputProps> = ({
   return (
     <View style={styles.container}>
       <OtpInput
-        value={value}
         numberOfDigits={numberOfDigits}
         autoFocus={autoFocus}
         disabled={disabled}

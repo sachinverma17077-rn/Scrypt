@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 
 import AuthBackground from '../../Component/AuthBackground';
@@ -18,6 +18,11 @@ import Toggle from '../../Component/UI/Toggle';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../../Redux/authSlice';
 import { validators } from '../../Backend/validators';
+import apiService from '../../api/apiService';
+import { LoginRequest, LoginResponse } from '../../types/auth';
+import { ENDPOINTS } from '../../api/endpoints';
+import { BASE_URL } from '../../api/env';
+import axios, { AxiosError } from "axios";
 
 interface IconItem {
   id: string;
@@ -29,6 +34,7 @@ const Login = ({ navigation }: any) => {
   const [checked, setChecked] = useState(false)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading,serLoading] = useState(false)
 
   type LoginErrors = {
     email?: string;
@@ -55,7 +61,8 @@ const Login = ({ navigation }: any) => {
     },
   ];
   //**********************METHOD***********************/ 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    serLoading(true)
     const tempError: LoginErrors = {};
 
     const emailError = validators.checkEmail(
@@ -79,7 +86,42 @@ const Login = ({ navigation }: any) => {
     setError(tempError);
 
     if (Object.keys(tempError).length === 0) {
-      dispatch(setLogin());
+
+      const body: LoginRequest = {
+        email,
+        password
+      }
+      console.log('body', body);
+      console.log('url', `${BASE_URL}${ENDPOINTS?.LOGIN}`);
+
+
+      try {
+        const response = await apiService?.post<LoginResponse>(
+          ENDPOINTS?.LOGIN,
+          body
+
+        );
+         serLoading(false)
+        console.log('response', response);
+        dispatch(
+          setLogin({
+            email,
+          }),
+        );
+      } catch (error) {
+        serLoading(false)
+        if (axios.isAxiosError(error)) {
+          console.log(error.response?.status);
+          console.log(error.response?.data);
+        } else {
+          console.log(error);
+        }
+      }
+      // dispatch(
+      //   setLogin({
+      //     email,
+      //   }),
+      // );
     }
   };
   return (
@@ -185,11 +227,11 @@ const Login = ({ navigation }: any) => {
                 }}
               />
 
-              <View style={styles?.rememberArea}>
+              {/* <View style={styles?.rememberArea}>
                 <Toggle />
                 <Typography size={14} fontFamily={Font?.Regular} color='#414751'>Remember this device</Typography>
-              </View>
-              <Button title='Unlock' style={{ marginTop: 30 }} icon={true} onPress={() => {
+              </View> */}
+              <Button title='Unlock' style={{ marginTop: 30 }} icon={true} loading={loading} onPress={() => {
                 handleLogin()
               }} />
 
@@ -201,18 +243,18 @@ const Login = ({ navigation }: any) => {
               </View>
 
               <View style={styles?.authButtons} >
-                <TouchableOpacity style={styles?.Button}>
+                <TouchableOpacity style={styles?.Button} onPress={()=>{globalThis.ToastMessage?.('Coming Soon', 'success')}}>
 
                   <SvgIcon name={'google'} />
                   <Typography size={14} color='#111C2D' fontFamily={Font?.Regular}>Google</Typography>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles?.Button}>
 
+               {Platform.OS == "ios"  &&( <TouchableOpacity style={styles?.Button} onPress={()=>{globalThis.ToastMessage?.('Coming Soon', 'success')}}>
                   <SvgIcon name={'apple'} />
                   <Typography size={14} color='#111C2D' fontFamily={Font?.Regular}>Apple</Typography>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles?.Button}>
+                </TouchableOpacity>)}
 
+                <TouchableOpacity style={styles?.Button} onPress={()=>{globalThis.ToastMessage?.('Coming Soon', 'success')}}>
                   <SvgIcon name={'facebook'} />
                   <Typography size={14} color='#111C2D' fontFamily={Font?.Regular}>FaceBook</Typography>
                 </TouchableOpacity>
@@ -252,7 +294,11 @@ const Login = ({ navigation }: any) => {
                   </View>
                 ))}
               </View>
-              <Typography style={{ alignSelf: "center", marginTop: 10 }} size={12} fontFamily={Font?.Regular} color='#94A3B8'>END-TO-END ENCRYPTED PROTOCOL.</Typography>
+              <View style={{ flexDirection: 'row', alignSelf: 'center', justifyContent: 'center', alignItems: 'center', gap: 2, marginTop: 15 }}>
+                <SvgIcon name={'shield_check'} />
+                <Typography style={{ alignSelf: "center" }} size={12} fontFamily={Font?.Regular} color='#94A3B8'>END-TO-END ENCRYPTED PROTOCOL.</Typography>
+
+              </View>
 
             </View>
           </View>
@@ -322,7 +368,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   authButtons: {
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     flexDirection: "row",
     marginTop: 20
   },

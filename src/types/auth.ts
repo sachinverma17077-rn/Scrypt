@@ -18,3 +18,45 @@ export interface LoginResponse {
   token: string;
   data: User;
 }
+export interface CheckUserRequest {
+  email: string;
+  userName: string;
+  phoneNumber: string;
+}
+
+export interface CheckUserResponse {
+  success: boolean;
+  messafe: string;
+}
+
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  checked: boolean;
+  userName: string
+}
+
+export interface RegisterResponse {
+  success:boolean;
+  message:string;
+  token:string;
+  data:User
+}
+
+export interface SendOTPRequest {
+  phoneNumber:string;
+}
+export interface SendOTPResponse {
+  success: boolean;
+  messafe: string;
+}
+
+export interface VerifyOTPRequest {
+  otp:string;
+}
+export interface VerifyOTPResponse {
+  success: boolean;
+  messafe: string;
+}

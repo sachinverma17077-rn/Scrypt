@@ -49,7 +49,7 @@ const MessageLogs = ({ navigation }: any) => {
             </Typography>
             {item.unreadMessages > 0 && (
               <View style={styles?.unreadBadge}>
-                <Typography color='#414751' size={12} fontFamily={Font?.SemiBold}>
+                <Typography color='#ffffff' size={12} fontFamily={Font?.SemiBold}>
                   {item.unreadMessages}
                 </Typography>
               </View>

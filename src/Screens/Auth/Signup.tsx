@@ -15,9 +15,14 @@ import Button from '../../Component/UI/Button'
 import { validators } from '../../Backend/validators';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../../Redux/authSlice';
+import apiService from '../../api/apiService';
+import { CheckUserRequest, CheckUserResponse } from '../../types/auth';
+import { ENDPOINTS } from '../../api/endpoints';
+import axios from 'axios';
 
 type SignupErrors = {
     name?: string;
+    userName?: string;
     email?: string;
     number?: string;
     password?: string;
@@ -30,14 +35,20 @@ const Signup = ({ navigation }: any) => {
     //**********************STATES***********************/  
     const [checked, setChecked] = useState(false)
     const [name, setName] = useState('');
+    const [UserName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [number, setNumber] = useState('');
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState<SignupErrors>({})
+    const [error, setError] = useState<SignupErrors>({});
+   
+    const [loading,setLoading] = useState(false)
+
+
 
     //**********************METHODS***********************/  
-    const handleSignup = () => {
+    const handleSignup = async () => {
+        setLoading(true)
         const tempError: SignupErrors = {};
 
         const nameError = validators.checkAlphabet(
@@ -49,6 +60,16 @@ const Signup = ({ navigation }: any) => {
 
         if (nameError) {
             tempError.name = nameError;
+        }
+        const userNameError = validators.checkAlphabet(
+            'Unique Name',
+            UserName,
+            2,
+            50,
+        );
+
+        if (userNameError) {
+            tempError.userName = userNameError;
         }
 
         const emailError = validators.checkEmail(
@@ -93,8 +114,46 @@ const Signup = ({ navigation }: any) => {
         setError(tempError);
 
         if (Object.keys(tempError).length === 0) {
+            const userData = {
+                name: name,
+                email: email,
+                number: number,
+                password: password,
+                checked: checked,
+                userName: UserName,
+            }
+    
+
             // dispatch(setLogin());
-            navigation.navigate('OTPScreen')
+            // navigation.navigate('OTPScreen')
+            const body: CheckUserRequest = {
+                email: email,
+                userName: UserName,
+                phoneNumber: number,
+
+            }
+
+            try {
+                const response = await apiService?.post<CheckUserResponse>(
+                    ENDPOINTS?.CHECK_USER_DATA,
+                    body
+                )
+                setLoading(false)
+                console.log('response', response);
+                if (response?.success == true) {
+                    navigation.navigate('OTPScreen', { data: userData })
+                }
+
+            } catch (error) {
+                setLoading(false)
+                if (axios.isAxiosError(error)) {
+                    console.log(error.response?.status);
+                    console.log(error.response?.data);
+                } else {
+                    console.log(error);
+                }
+            }
+
         }
     };
 
@@ -102,7 +161,7 @@ const Signup = ({ navigation }: any) => {
     return (
         <AuthBackground>
             <Header title="Scypt" styleMain={{ alignItems: 'center' }} />
-            <ScrollView>
+          
                 <KeyboardWrapper>
 
                     <View style={styles.screenView}>
@@ -142,9 +201,29 @@ const Signup = ({ navigation }: any) => {
                                     }
                                 }}
                                 error={error?.name}
-                                placeholder="Sachin Verma"
+                                placeholder="levi Ackerman"
                                 placeholderTextColor={Colors.placeHolderColor}
                             />
+
+                            <Input
+                                iconName="profile_Tab"
+                                title="UNIQUE NAME"
+                                value={UserName}
+                                onChange={(text: string) => {
+                                    setUserName(text);
+
+                                    if (error.userName) {
+                                        setError(prev => ({
+                                            ...prev,
+                                            userName: undefined,
+                                        }));
+                                    }
+                                }}
+                                error={error?.userName}
+                                placeholder="Mind_Hunter"
+                                placeholderTextColor={Colors.placeHolderColor}
+                            />
+                            <Typography size={12} fontFamily={Font?.Regular} color={Colors?.placeHolderColor} style={{ marginBottom: 5, width: FULL_WIDTH * 0.7 }}>Let's create your unique identity. Choose a username that represents you.</Typography>
 
                             <Input
                                 iconName="mail"
@@ -204,7 +283,7 @@ const Signup = ({ navigation }: any) => {
                                 placeholder="Abcde@1234"
                                 placeholderTextColor={Colors.placeHolderColor}
                                 error={error?.password}
-                                keyboardType='visible-password'
+                                
                             />
                             <Typography size={12} fontFamily={Font?.Regular} color={Colors?.placeHolderColor} style={{ marginBottom: 5, width: FULL_WIDTH * 0.7 }}>Must be at least 8 characters with letters and
                                 numbers.</Typography>
@@ -248,12 +327,12 @@ const Signup = ({ navigation }: any) => {
                                     size={12}
                                     color={Colors.errorText}
                                     fontFamily={Font.Regular}
-                                    style={{ marginTop: 5,textAlign:"right" }}
+                                    style={{ marginTop: 5, textAlign: "right" }}
                                 >
                                     {error.terms}
                                 </Typography>
                             )}
-                            <Button title='Create Account' style={{ marginTop: 30 }} icon={true} onPress={() => { handleSignup() }} />
+                            <Button title='Create Account' style={{ marginTop: 30 }} icon={true} loading={loading} onPress={() => { handleSignup() }} />
                         </View>
 
                         <View style={styles?.footer} >
@@ -264,7 +343,7 @@ const Signup = ({ navigation }: any) => {
                         </View>
                     </View>
                 </KeyboardWrapper>
-            </ScrollView>
+          
         </AuthBackground>
     );
 };

@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const generateToken = require('../utils/generateToken');
-const client = require('../config/twilio');
+
 
 // Register User
 const registerUser = async (req, res) => {
@@ -112,7 +112,7 @@ const loginUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: 'User not found',
+                message: 'No account found with this email. Please sign up to get started.',
             });
         }
 
@@ -193,47 +193,46 @@ const checkUserData = async (req,res)=>{
 };
 // forget password
 const sendOTP = async (req, res) => {
-    try {
-        const { phoneNumber } = req.body;
+  try {
+    const { phoneNumber } = req.body;
 
-        if (!phoneNumber) {
-            return res.status(400).json({
-                success: false,
-                message: 'Phone Number is required',
-                
-            });
-        }
-
-        const response =
-            await client.verify.v2
-                .services(process.env.TWILIO_VERIFY_SID)
-                .verifications.create({
-                    to: phoneNumber,
-                    channel: 'sms',
-                });
-
-        return res.status(200).json({
-            success: true,
-            message: 'OTP sent successfully',
-            status: response.status,
-             otp: '123456',
-        });
-    } catch (error) {
-        console.error('Send OTP Error:', error);
-
-        return res.status(500).json({
-            success: false,
-            message: 'Failed to send OTP',
-        });
+    if (!phoneNumber) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone Number is required",
+      });
     }
-};
 
+  
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully",
+      status: "pending",
+      otp: "000000",
+    });
+  } catch (error) {
+    console.error("Send OTP Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to send OTP",
+    });
+  }
+};
 
 const verifyOTP = async (req, res) => {
     try {
         const { otp } = req.body;
 
-        if (otp !== '123456') {
+        if (!otp) {
+            return res.status(400).json({
+                success: false,
+                message: 'OTP is required',
+            });
+        }
+
+        // Development OTP
+        if (otp !== '000000') {
             return res.status(400).json({
                 success: false,
                 message: 'Invalid OTP',
@@ -245,9 +244,134 @@ const verifyOTP = async (req, res) => {
             message: 'OTP Verified Successfully',
         });
     } catch (error) {
+        console.error('Verify OTP Error:', error);
+
         return res.status(500).json({
             success: false,
             message: 'Verification Failed',
+        });
+    }
+};
+const changePassword = async (req, res) => {
+    try {
+        const { phoneNumber, newPassword } = req.body;
+
+        if (!phoneNumber || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Phone Number and New Password are required',
+            });
+        }
+
+        const user = await User.findOne({
+            phoneNumber,
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(
+            newPassword,
+            10
+        );
+
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Password changed successfully',
+        });
+    } catch (error) {
+        console.error(
+            'Change Password Error:',
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+        });
+    }
+};
+
+const resetPassword = async (req, res) => {
+    try {
+        const {
+            oldPassword,
+            newPassword,
+        } = req.body;
+
+        if (
+            !oldPassword 
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: 'Old Password is required',
+            });
+        }
+
+         if (
+           !newPassword
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: 'New Password is required',
+            });
+        }
+
+        
+
+        const user = await User.findById(
+            req.user.id
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
+
+        const isMatch =
+            await bcrypt.compare(
+                oldPassword,
+                user.password
+            );
+
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    'Old Password is incorrect',
+            });
+        }
+
+        user.password =
+            await bcrypt.hash(
+                newPassword,
+                10
+            );
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message:
+                'Password updated successfully',
+        });
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message:
+                'Internal Server Error',
         });
     }
 };
@@ -257,4 +381,6 @@ module.exports = {
     checkUserData,
     sendOTP,
     verifyOTP,
+    changePassword,
+    resetPassword,
 };
